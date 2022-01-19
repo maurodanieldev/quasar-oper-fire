@@ -1,7 +1,7 @@
-# quasar-oper-fire-app
-example ms in golang
+# quasar-oper-fire
 
-# API documentation in : 
+
+# API  : 
 
 https://oper-quasar.aroundevs.com/api/swagger-ui/index.html
 
