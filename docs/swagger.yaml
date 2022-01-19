@@ -1,0 +1,303 @@
+basePath: /api
+definitions:
+  controllers.Health:
+    properties:
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  request.Satellite:
+    properties:
+      distance:
+        type: number
+      message:
+        items:
+          type: string
+        type: array
+      name:
+        type: string
+      x:
+        type: number
+      "y":
+        type: number
+    type: object
+  request.SatelliteRequest:
+    properties:
+      distance:
+        type: number
+      message:
+        items:
+          type: string
+        type: array
+      name:
+        type: string
+    required:
+      - distance
+      - message
+      - name
+    type: object
+  request.SatellitesRequest:
+    properties:
+      satellites:
+        items:
+          $ref: "#/definitions/request.SatelliteRequest"
+        type: array
+    required:
+      - satellites
+    type: object
+  responses.HTTPError:
+    properties:
+      code:
+        type: integer
+      error:
+        type: string
+      message:
+        type: object
+    type: object
+  responses.MessageResponse:
+    properties:
+      message:
+        type: string
+      position:
+        $ref: "#/definitions/responses.Position"
+    type: object
+  responses.Position:
+    properties:
+      x:
+        type: number
+      "y":
+        type: number
+    type: object
+info:
+  contact:
+    email: mauro.daniel.dev@gmail.com
+    name: Daniel Mauro
+  description: Operación Fuego de Quasar.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: Quasar Fire API
+  version: "1.0"
+paths:
+  /health:
+    get:
+      description: check API health
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/controllers.Health"
+  /satellites:
+    get:
+      description: get all satellites
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: "#/definitions/request.Satellite"
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: "#/definitions/responses.HTTPError"
+    post:
+      consumes:
+        - application/json
+      description: Create a satellite
+      parameters:
+        - description: satellite info
+          in: body
+          name: satellite
+          required: true
+          schema:
+            $ref: "#/definitions/request.Satellite"
+      responses:
+        "201":
+          description: Successfully create Satellite
+        "404":
+          description: Not Found
+          schema:
+            $ref: "#/definitions/responses.HTTPError"
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: "#/definitions/responses.HTTPError"
+  /satellites/{name}:
+    delete:
+      consumes:
+        - application/json
+      description: Delete satellite by name
+      parameters:
+        - description: name
+          in: path
+          name: name
+          required: true
+          type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/request.Satellite"
+        "404":
+          description: Not Found
+          schema:
+            $ref: "#/definitions/responses.HTTPError"
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: "#/definitions/responses.HTTPError"
+    get:
+      description: get a satellite by name
+      parameters:
+        - description: name
+          in: path
+          name: name
+          required: true
+          type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/request.Satellite"
+        "404":
+          description: Not Found
+          schema:
+            $ref: "#/definitions/responses.HTTPError"
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: "#/definitions/responses.HTTPError"
+    patch:
+      consumes:
+        - application/json
+      description: update a property satellite by name
+      parameters:
+        - description: name
+          in: path
+          name: name
+          required: true
+          type: string
+        - description: satellite info
+          in: body
+          name: satellite
+          required: true
+          schema:
+            $ref: "#/definitions/request.Satellite"
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/request.Satellite"
+        "400":
+          description: Bad Request
+          schema:
+            type: "404"
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: "#/definitions/responses.HTTPError"
+    put:
+      consumes:
+        - application/json
+      description: update a satellite by name
+      parameters:
+        - description: name
+          in: formData
+          name: name
+          required: true
+          type: string
+        - description: satellite info
+          in: body
+          name: satellite
+          required: true
+          schema:
+            $ref: "#/definitions/request.Satellite"
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/request.Satellite"
+        "400":
+          description: Bad Request
+          schema:
+            $ref: "#/definitions/responses.HTTPError"
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: "#/definitions/responses.HTTPError"
+  /topsecret:
+    post:
+      consumes:
+        - application/json
+      description: get secret message and coordinates
+      parameters:
+        - description: satellite info
+          in: body
+          name: satellite
+          required: true
+          schema:
+            $ref: "#/definitions/request.SatellitesRequest"
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/responses.MessageResponse"
+        "404":
+          description: Not Found
+          schema:
+            $ref: "#/definitions/responses.HTTPError"
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: "#/definitions/responses.HTTPError"
+  /topsecret_split:
+    get:
+      consumes:
+        - application/json
+      description: get secret message and coordinates
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/responses.MessageResponse"
+        "404":
+          description: Not Found
+          schema:
+            $ref: "#/definitions/responses.HTTPError"
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: "#/definitions/responses.HTTPError"
+  /topsecret_split/{name}:
+    post:
+      consumes:
+        - application/json
+      description: put message and distance on satellite
+      parameters:
+        - description: name
+          in: path
+          name: name
+          required: true
+          type: string
+        - description: satellite info
+          in: body
+          name: satellite
+          required: true
+          schema:
+            $ref: "#/definitions/request.Satellite"
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/request.Satellite"
+        "400":
+          description: Bad Request
+          schema:
+            type: "404"
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: "#/definitions/responses.HTTPError"
+swagger: "2.0"
