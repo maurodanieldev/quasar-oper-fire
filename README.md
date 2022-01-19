@@ -3,7 +3,7 @@ example ms in golang
 
 # API documentation in : 
 
-http://localhost:8080/api/quasar-fire/swagger/index.html
+https://oper-quasar.aroundevs.com/api/swagger-ui/index.html
 
 #run the project with 
 deploy  container
